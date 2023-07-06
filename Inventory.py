@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-# Form implementation generated from reading ui file 'Available_product.ui'
+# Form implementation generated from reading ui file 'Inventory.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -14,26 +14,23 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QTableWidgetItem
 
-import main
 from Encryption import Encryption
 from Product import Product
 
 
-class Ui_availableProduct(object):
-    def setupUi(self, availableProduct):
-        availableProduct.setObjectName("availableProduct")
-        availableProduct.resize(800, 500)
-        availableProduct.setMinimumSize(QtCore.QSize(800, 500))
-        availableProduct.setMaximumSize(QtCore.QSize(800, 500))
-        self.label = QtWidgets.QLabel(availableProduct)
-        self.label.setGeometry(QtCore.QRect(0, 0, 800, 500))
-        self.label.setStyleSheet("background-image: url(image/BG.jpeg);")
-        self.label.setText("")
-        self.label.setObjectName("label")
-        self.tableView = QtWidgets.QTableWidget(availableProduct)
-        self.tableView.setGeometry(QtCore.QRect(20, 70, 761, 401))
-        self.tableView.setObjectName("tableView")
-        self.pushButton = QtWidgets.QPushButton(availableProduct)
+class Ui_inventory(object):
+    def setupUi(self, inventory):
+        inventory.setObjectName("inventory")
+        inventory.resize(800, 500)
+        inventory.setMinimumSize(QtCore.QSize(800, 500))
+        inventory.setMaximumSize(QtCore.QSize(800, 500))
+        self.label_3 = QtWidgets.QLabel(inventory)
+        self.label_3.setGeometry(QtCore.QRect(10, 20, 781, 41))
+        self.label_3.setStyleSheet("color: rgb(255, 255, 255);\n"
+"font: 75 24pt \"Perpetua Titling MT\";")
+        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_3.setObjectName("label_3")
+        self.pushButton = QtWidgets.QPushButton(inventory)
         self.pushButton.setGeometry(QtCore.QRect(10, 10, 50, 50))
         self.pushButton.setMinimumSize(QtCore.QSize(50, 50))
         self.pushButton.setMaximumSize(QtCore.QSize(50, 50))
@@ -45,23 +42,31 @@ class Ui_availableProduct(object):
         self.pushButton.setIcon(icon)
         self.pushButton.setIconSize(QtCore.QSize(50, 50))
         self.pushButton.setObjectName("pushButton")
-        self.label_3 = QtWidgets.QLabel(availableProduct)
-        self.label_3.setGeometry(QtCore.QRect(10, 20, 781, 41))
-        self.label_3.setStyleSheet("color: rgb(255, 255, 255);\n"
-                                    "font: 75 24pt \"Perpetua Titling MT\";")
-        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_3.setObjectName("label_3")
-        self.retranslateUi(availableProduct)
-        QtCore.QMetaObject.connectSlotsByName(availableProduct)
-
-        self.tableView.setFont(QFont("Tahoma", 12))
-        self.pushButton.clicked.connect(self.backToMain)
+        self.label = QtWidgets.QLabel(inventory)
+        self.label.setGeometry(QtCore.QRect(0, 0, 800, 500))
+        self.label.setStyleSheet("background-image: url(image/BG.jpeg);")
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.tableWidget = QtWidgets.QTableWidget(inventory)
+        self.tableWidget.setGeometry(QtCore.QRect(20, 70, 761, 411))
+        self.tableWidget.setObjectName("tableWidget")
+        self.tableWidget.setColumnCount(0)
+        self.tableWidget.setRowCount(0)
+        self.label.raise_()
+        self.label_3.raise_()
         self.pushButton.raise_()
+        self.tableWidget.raise_()
 
-    def retranslateUi(self,availableProduct):
+        self.retranslateUi(inventory)
+        QtCore.QMetaObject.connectSlotsByName(inventory)
+
+        self.tableWidget.setFont(QFont("Tahoma", 12))
+        self.pushButton.clicked.connect(self.backToMain)
+
+    def retranslateUi(self, inventory):
         _translate = QtCore.QCoreApplication.translate
-        availableProduct.setWindowTitle(_translate("availableProduct", "Available Products"))
-        self.label_3.setText(_translate("availableProduct", "AVAILABLE PRODUCTS"))
+        inventory.setWindowTitle(_translate("inventory", "Inventory"))
+        self.label_3.setText(_translate("inventory", "inventory"))
 
     item = []
 
@@ -90,23 +95,18 @@ class Ui_availableProduct(object):
                     temp = Product()  # Create a new instance for each item
         except IOError as e:
             print("Error reading file:", e)
-        finally:
-            reader.close()
 
     def display_table(self):
-        num_cols = 6
-
-        # Filter items based on the category
-        filtered_items = [item for item in self.item if item.getQuantity() > 0 ]
-        num_rows = len(filtered_items)
+        num_rows = len(self.item)
+        num_cols = 9
 
         # Set the table dimensions
-        self.tableView.setRowCount(num_rows)
-        self.tableView.setColumnCount(num_cols)
+        self.tableWidget.setRowCount(num_rows)
+        self.tableWidget.setColumnCount(num_cols)
 
         # Define the desired attribute names
-        attribute_names = ["ID", "ProductName", "Brand", "Price", "Category", "Description"]
-        self.tableView.setHorizontalHeaderLabels(attribute_names)
+        attribute_names = ["ID", "Price", "Quantity", "ProductName", "Brand", "Description", "Category", "Supplier", "Date"]
+        self.tableWidget.setHorizontalHeaderLabels(attribute_names)
 
         # Populate the table with data
         for row in range(num_rows):
@@ -119,28 +119,27 @@ class Ui_availableProduct(object):
                 # Set the item flags to make it read-only
                 table_item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
 
-                self.tableView.setItem(row, col, table_item)
+                self.tableWidget.setItem(row, col, table_item)
 
         # Adjust column widths to maximize space
-        table_width = self.tableView.viewport().width()
-        column_width = int(table_width / num_cols)
-        for col in range(num_cols):
-            self.tableView.setColumnWidth(col, column_width)
+        # table_width = self.tableWidget.viewport().width()
+        # column_width = int(table_width / num_cols)
+        # for col in range(num_cols):
+        #     self.tableWidget.setColumnWidth(col, column_width)
 
     def backToMain(self):
-        availableProduct.destroy()
+        inventory.destroy()
         current_directory = os.path.dirname(os.path.abspath(__file__))
         script_path = os.path.join(current_directory, "main.py")
         subprocess.run(["python", script_path])
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
-    availableProduct = QtWidgets.QFrame()
-    ui = Ui_availableProduct()
-    ui.setupUi(availableProduct)
-    ui.retrieve()  # Populate the item list
-    ui.display_table()  # Display the table
-    availableProduct.show()
+    inventory = QtWidgets.QFrame()
+    ui = Ui_inventory()
+    ui.setupUi(inventory)
+    ui.retrieve()
+    ui.display_table()
+    inventory.show()
     sys.exit(app.exec_())

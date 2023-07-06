@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+import subprocess
 
 # Form implementation generated from reading ui file 'main.ui'
 #
@@ -10,17 +12,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from Available_product import Ui_availableProduct
 class Ui_main(object):
-
-    def availableWindow(self):
-        self.window = QtWidgets.QFrame()
-        self.ui = Ui_availableProduct()
-        self.ui.setupUi(self.window)
-        self.ui.retrieve()  # Populate the item list
-        self.ui.display_table()  # Display the table
-        self.window.show()
-        main.hide()
 
     def setupUi(self, main):
         main.setObjectName("main")
@@ -58,11 +50,11 @@ class Ui_main(object):
 "color: rgb(255, 255, 255);")
         self.pushButton_4.setObjectName("pushButton_4")
         self.gridLayout.addWidget(self.pushButton_4, 2, 2, 1, 1, QtCore.Qt.AlignHCenter)
-        self.pushButton_2 = QtWidgets.QPushButton(self.frame, clicked = lambda: self.availableWindow())
+        self.pushButton_2 = QtWidgets.QPushButton(main)
         self.pushButton_2.setMinimumSize(QtCore.QSize(80, 80))
         self.pushButton_2.setMaximumSize(QtCore.QSize(80, 80))
         self.pushButton_2.setStyleSheet("font: 75 24pt \"Tahoma\";\n"
-"color: rgb(255, 255, 255);")
+                                        "color: rgb(255, 255, 255);")
         self.pushButton_2.setObjectName("pushButton_2")
         self.gridLayout.addWidget(self.pushButton_2, 2, 0, 1, 1)
         self.label_4 = QtWidgets.QLabel(self.frame)
@@ -239,6 +231,13 @@ class Ui_main(object):
         self.retranslateUi(main)
         QtCore.QMetaObject.connectSlotsByName(main)
 
+        self.pushButton_2.clicked.connect(self.availableWindow)
+        self.pushButton_11.clicked.connect(self.inventoryWindow)
+        self.pushButton_4.clicked.connect(self.categoryWindow)
+        self.pushButton_3.clicked.connect(self.outOfStockWindow)
+        self.pushButton_6.clicked.connect(self.ReceivedHistoryWindow)
+        self.pushButton_9.clicked.connect(self.TransactionHistoryWindow)
+
     def retranslateUi(self, main):
         _translate = QtCore.QCoreApplication.translate
         main.setWindowTitle(_translate("main", "Furniture System"))
@@ -269,6 +268,42 @@ class Ui_main(object):
         self.label_17.setText(_translate("main", "Item Inventory"))
         self.pushButton_11.setText(_translate("main", "IR"))
 
+
+    def availableWindow(self):
+        main.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "Available_product.py")
+        subprocess.run(["python", script_path])
+
+    def inventoryWindow(self):
+        main.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "Inventory.py")
+        subprocess.run(["python", script_path])
+
+    def categoryWindow(self):
+        main.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "Product_category.py")
+        subprocess.run(["python", script_path])
+
+    def outOfStockWindow(self):
+        main.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "Out_of_stock.py")
+        subprocess.run(["python", script_path])
+
+    def ReceivedHistoryWindow(self):
+        main.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "Received_history.py")
+        subprocess.run(["python", script_path])
+
+    def TransactionHistoryWindow(self):
+        main.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "Transaction_history.py")
+        subprocess.run(["python", script_path])
 
 
 if __name__ == "__main__":

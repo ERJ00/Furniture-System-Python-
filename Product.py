@@ -12,77 +12,7 @@ class Product:
         self.Supplier = None
         self.Date = None
 
-
-    # def __init__(self, other):
-    #     self.key = other.key
-    #     self.ID = other.ID
-    #     self.price = other.price
-    #     self.quantity = other.quantity
-    #     self.productName = other.productName
-    #     self.brand = other.brand
-    #     self.description = other.description
-    #     self.category = other.category
-    #     self.supplier = other.supplier
-    #     self.date = other.date
-
-    # Getters and Setters
-
-    # def getKey(self):
-    #     return self.key
-    #
-    # def getID(self):
-    #     return self.ID
-    #
-    # def setID(self, ID):
-    #     self.ID = ID
-    #
-    # def getPrice(self):
-    #     return self.price
-    #
-    # def setPrice(self, price):
-    #     self.price = price
-    #
-    # def getQuantity(self):
-    #     return self.quantity
-    #
-    # def setQuantity(self, quantity):
-    #     self.quantity = quantity
-    #
-    # def getProductName(self):
-    #     return self.productName
-    #
-    # def setProductName(self, productName):
-    #     self.productName = productName
-    #
-    # def getBrand(self):
-    #     return self.brand
-    #
-    # def setBrand(self, brand):
-    #     self.brand = brand
-    #
-    # def getDescription(self):
-    #     return self.description
-    #
-    # def setDescription(self, description):
-    #     self.description = description
-    #
-    # def getCategory(self):
-    #     return self.category
-    #
-    # def setCategory(self, category):
-    #     self.category = category
-    #
-    # def getSupplier(self):
-    #     return self.supplier
-    #
-    # def setSupplier(self, supplier):
-    #     self.supplier = supplier
-    #
-    # def getDate(self):
-    #     return self.date
-    #
-    # def setDate(self, date):
-    #     self.date = date
+    # Setters
 
     def setID(self, ID):
         self.ID = ID
@@ -110,3 +40,32 @@ class Product:
 
     def setDate(self, Date):
         self.Date = Date
+
+    # Getters
+
+    def getID(self):
+        return self.ID
+
+    def getPrice(self):
+        return self.Price
+
+    def getQuantity(self):
+        return self.Quantity
+
+    def getProductName(self):
+        return self.ProductName
+
+    def getBrand(self):
+        return self.Brand
+
+    def getDescription(self):
+        return self.Description
+
+    def getCategory(self):
+        return self.Category
+
+    def getSupplier(self):
+        return self.Supplier
+
+    def getDate(self):
+        return self.Date

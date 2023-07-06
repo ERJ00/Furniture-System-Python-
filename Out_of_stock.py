@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-# Form implementation generated from reading ui file 'Available_product.ui'
+# Form implementation generated from reading ui file 'Out_of_stock.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -11,29 +11,29 @@ import subprocess
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QTableWidgetItem
 
-import main
 from Encryption import Encryption
 from Product import Product
 
 
-class Ui_availableProduct(object):
-    def setupUi(self, availableProduct):
-        availableProduct.setObjectName("availableProduct")
-        availableProduct.resize(800, 500)
-        availableProduct.setMinimumSize(QtCore.QSize(800, 500))
-        availableProduct.setMaximumSize(QtCore.QSize(800, 500))
-        self.label = QtWidgets.QLabel(availableProduct)
+class Ui_outOfStock(object):
+    def setupUi(self, outOfStock):
+        outOfStock.setObjectName("outOfStock")
+        outOfStock.resize(800, 500)
+        outOfStock.setMinimumSize(QtCore.QSize(800, 500))
+        outOfStock.setMaximumSize(QtCore.QSize(800, 500))
+        self.label = QtWidgets.QLabel(outOfStock)
         self.label.setGeometry(QtCore.QRect(0, 0, 800, 500))
         self.label.setStyleSheet("background-image: url(image/BG.jpeg);")
         self.label.setText("")
         self.label.setObjectName("label")
-        self.tableView = QtWidgets.QTableWidget(availableProduct)
-        self.tableView.setGeometry(QtCore.QRect(20, 70, 761, 401))
-        self.tableView.setObjectName("tableView")
-        self.pushButton = QtWidgets.QPushButton(availableProduct)
+        self.tableView = QtWidgets.QTableWidget(outOfStock)
+        self.tableView.setGeometry(QtCore.QRect(20, 70, 761, 411))
+        self.tableView.setObjectName("tableWidget")
+        self.tableView.setColumnCount(0)
+        self.tableView.setRowCount(0)
+        self.pushButton = QtWidgets.QPushButton(outOfStock)
         self.pushButton.setGeometry(QtCore.QRect(10, 10, 50, 50))
         self.pushButton.setMinimumSize(QtCore.QSize(50, 50))
         self.pushButton.setMaximumSize(QtCore.QSize(50, 50))
@@ -41,27 +41,29 @@ class Ui_availableProduct(object):
         self.pushButton.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
         self.pushButton.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("image/Back_button.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("Image/Back_button.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButton.setIcon(icon)
         self.pushButton.setIconSize(QtCore.QSize(50, 50))
         self.pushButton.setObjectName("pushButton")
-        self.label_3 = QtWidgets.QLabel(availableProduct)
+        self.label_3 = QtWidgets.QLabel(outOfStock)
         self.label_3.setGeometry(QtCore.QRect(10, 20, 781, 41))
         self.label_3.setStyleSheet("color: rgb(255, 255, 255);\n"
-                                    "font: 75 24pt \"Perpetua Titling MT\";")
+"font: 75 24pt \"Perpetua Titling MT\";")
         self.label_3.setAlignment(QtCore.Qt.AlignCenter)
         self.label_3.setObjectName("label_3")
-        self.retranslateUi(availableProduct)
-        QtCore.QMetaObject.connectSlotsByName(availableProduct)
-
-        self.tableView.setFont(QFont("Tahoma", 12))
-        self.pushButton.clicked.connect(self.backToMain)
+        self.label.raise_()
+        self.tableView.raise_()
+        self.label_3.raise_()
         self.pushButton.raise_()
 
-    def retranslateUi(self,availableProduct):
+        self.retranslateUi(outOfStock)
+        QtCore.QMetaObject.connectSlotsByName(outOfStock)
+
+        self.pushButton.clicked.connect(self.backToMain)
+    def retranslateUi(self, outOfStock):
         _translate = QtCore.QCoreApplication.translate
-        availableProduct.setWindowTitle(_translate("availableProduct", "Available Products"))
-        self.label_3.setText(_translate("availableProduct", "AVAILABLE PRODUCTS"))
+        outOfStock.setWindowTitle(_translate("outOfStock", "Frame"))
+        self.label_3.setText(_translate("outOfStock", "OUT OF STOCK PRODUCTS"))
 
     item = []
 
@@ -96,8 +98,8 @@ class Ui_availableProduct(object):
     def display_table(self):
         num_cols = 6
 
-        # Filter items based on the category
-        filtered_items = [item for item in self.item if item.getQuantity() > 0 ]
+        # Filter items based on the category and quantity equal to 0
+        filtered_items = [item for item in self.item if item.getQuantity() == 0]
         num_rows = len(filtered_items)
 
         # Set the table dimensions
@@ -109,10 +111,8 @@ class Ui_availableProduct(object):
         self.tableView.setHorizontalHeaderLabels(attribute_names)
 
         # Populate the table with data
-        for row in range(num_rows):
-            item = self.item[row]
-            for col in range(num_cols):
-                attribute_name = attribute_names[col]
+        for row, item in enumerate(filtered_items):
+            for col, attribute_name in enumerate(attribute_names):
                 value = getattr(item, attribute_name)
                 table_item = QTableWidgetItem(str(value))
 
@@ -128,19 +128,18 @@ class Ui_availableProduct(object):
             self.tableView.setColumnWidth(col, column_width)
 
     def backToMain(self):
-        availableProduct.destroy()
+        outOfStock.destroy()
         current_directory = os.path.dirname(os.path.abspath(__file__))
         script_path = os.path.join(current_directory, "main.py")
         subprocess.run(["python", script_path])
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
-    availableProduct = QtWidgets.QFrame()
-    ui = Ui_availableProduct()
-    ui.setupUi(availableProduct)
-    ui.retrieve()  # Populate the item list
-    ui.display_table()  # Display the table
-    availableProduct.show()
+    outOfStock = QtWidgets.QFrame()
+    ui = Ui_outOfStock()
+    ui.setupUi(outOfStock)
+    ui.retrieve()
+    ui.display_table()
+    outOfStock.show()
     sys.exit(app.exec_())

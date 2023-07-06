@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="newPrefix">
-    <file>image/BG.jpeg</file>
-    <file>image/Back_button.png</file>
+    <file>image/Display.jpg</file>
   </qresource>
 </RCC>
