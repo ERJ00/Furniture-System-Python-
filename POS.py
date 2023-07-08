@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-from random import random
+import os
+import subprocess
+from datetime import datetime, date
+import random
 from tkinter import messagebox
 
 # Form implementation generated from reading ui file 'POS.ui'
@@ -12,7 +14,7 @@ from tkinter import messagebox
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 import Information
 from CustomerData import CustomerData
@@ -284,6 +286,7 @@ class Ui_POS(object):
         self.pushButton_3.clicked.connect(self.increaseSelectedQuantity)
         self.payment.textChanged.connect(self.calculateBalance)
         self.pushButton_4.clicked.connect(self.add_buttonActionPerformed)
+        self.pushButton.clicked.connect(self.backToMain)
     def retranslateUi(self, POS):
         _translate = QtCore.QCoreApplication.translate
         POS.setWindowTitle(_translate("POS", "Point of Sales"))
@@ -390,44 +393,34 @@ class Ui_POS(object):
                     print("Error reading file:", e)
 
     def save(self, data):
-            try:
-                    with open(
-                            "Database/customers_data.txt",
-                            "a") as f:
-                            encrypted_data = Encryption.encrypt(
-                                    data.getStatus() + " / " + data.getName() + " / " + data.getBirthday() + " / " + data.getContactNumber() + " / " + data.getAddress() + " / " + data.getProductName() + " / " + data.getCategory() + " / " + data.getQuantity() + " / " + data.getTotalPayment() + " / " + data.getPaymentReceived() + " / " + data.getBalance() + " / " + data.getChange() + " / " + data.getDate() + " / " + data.getID() + " / ")
-                            f.write(encrypted_data + "\n")
-            except IOError as i:
-                    i.printStackTrace()
+            customers_data_path = "Database/customers_data.txt"
+            transaction_history_path = "Database/transaction_history.txt"
+            products_path = "Database/products.txt"
 
             try:
-                    with open(
-                            "Database/transaction_history.txt",
-                            "a") as f:
+                    with open(customers_data_path, "a") as f:
                             encrypted_data = Encryption.encrypt(
-                                    data.getStatus() + " / " + data.getName() + " / " + data.getBirthday() + " / " + data.getContactNumber() + " / " + data.getAddress() + " / " + data.getProductName() + " / " + data.getCategory() + " / " + data.getQuantity() + " / " + data.getTotalPayment() + " / " + data.getPaymentReceived() + " / " + data.getBalance() + " / " + data.getChange() + " / " + data.getDate() + " / " + data.getID() + " / ")
+                                    f"{data.getStatus()} / {data.getName()} / {data.getBirthday()} / {data.getContactNumber()} / {data.getAddress()} / {data.getProductName()} / {data.getCategory()} / {data.getQuantity()} / {data.getTotalPayment()} / {data.getPaymentReceived()} / {data.getBalance()} / {data.getChange()} / {data.getDate()} / {data.getID()} / "
+                            )
                             f.write(encrypted_data + "\n")
-            except IOError as i:
-                    i.printStackTrace()
 
-            try:
-                    with open("Database/products.txt",
-                              "w") as f:
+                    with open(transaction_history_path, "a") as f:
+                            encrypted_data = Encryption.encrypt(
+                                    f"{data.getStatus()} / {data.getName()} / {data.getBirthday()} / {data.getContactNumber()} / {data.getAddress()} / {data.getProductName()} / {data.getCategory()} / {data.getQuantity()} / {data.getTotalPayment()} / {data.getPaymentReceived()} / {data.getBalance()} / {data.getChange()} / {data.getDate()} / {data.getID()} / "
+                            )
+                            f.write(encrypted_data + "\n")
+
+                    with open(products_path, "w") as f:
                             for product in self.item:
-                                    encrypted_id = Encryption.encrypt(str(product.getID()) + " / ")
-                                    encrypted_price = Encryption.encrypt(str(product.getPrice()) + " / ")
-                                    encrypted_quantity = Encryption.encrypt(str(product.getQuantity()) + " / ")
-                                    encrypted_product_name = Encryption.encrypt(product.getProductName() + " / ")
-                                    encrypted_brand = Encryption.encrypt(product.getBrand() + " / ")
-                                    encrypted_description = Encryption.encrypt(product.getDescription() + " / ")
-                                    encrypted_category = Encryption.encrypt(product.getCategory() + " / ")
-                                    encrypted_supplier = Encryption.encrypt(product.getSupplier() + " / ")
-                                    encrypted_date = Encryption.encrypt(product.getDate() + " / ")
-                                    f.write(encrypted_id + encrypted_price + encrypted_quantity + encrypted_product_name + encrypted_brand + encrypted_description + encrypted_category + encrypted_supplier + encrypted_date + "\n")
-            except IOError as e:
-                    print("An error occurred.")
-                    e.printStackTrace()
+                                    encrypted_data = Encryption.encrypt(
+                                            f"{str(product.getID())} / {str(product.getPrice())} / {str(product.getQuantity())} / {product.getProductName()} / {product.getBrand()} / {product.getDescription()} / {product.getCategory()} / {product.getSupplier()} / {product.getDate()} / "
+                                    )
+                                    f.write(encrypted_data + "\n")
 
+            except Exception as e:
+                    print("An error occurred.")
+                    print(e)
+                    QMessageBox.critical(None, "Error", "An error occurred while saving the data.")
     def checkID(self, id):
             for customer in self.buyer:
                     if customer.getID() == id:
@@ -514,46 +507,43 @@ class Ui_POS(object):
                     self.change.setText(str(bal))
                     self.status.setText("PAID")
 
-    import tkinter as tk
-    from tkinter import messagebox
-
-    def add_buttonActionPerformed(self, evt):
+    def add_buttonActionPerformed(self):
             data = CustomerData()
-            if self.category.getSelectedItem() is None or self.product_item.getSelectedItem() is None or "0" == self.selected_quantity.getText() or self.payment.getText() == "" or self.name.getText() == "" or self.birthday.getText() == "" or self.contact.getText() == "" or self.address.getText() == "":
-                    messagebox.showerror("Error", "Please fill up all needed data.")
+
+            if self.category.currentText() == "" or self.product_item.currentText() == "" or self.selected_quantity.text() == "0" \
+                    or self.payment.text() == "" or self.name.text() == "" or self.birthday.text() == "" \
+                    or self.contact.text() == "" or self.address.text() == "":
+                    messagebox.showwarning("Missing Data", "Please fill up all needed data.")
             else:
-                    rand = random.Random()
-                    ID = 0
-                    while True:
-                            ID = rand.randint(11111, 99999)
-                            if self.checkID(ID) == False:
-                                    break
+                    ID = random.randint(11111, 99999)
+                    while self.checkID(ID) == True:
+                        ID = random.randint(11111, 99999)
+
                     data.setID(ID)
-                    data.setStatus(self.status.getText())
-                    data.setName(self.name.getText().upper())
-                    data.setBirthday(self.birthday.getText())
-                    data.setContactNumber(self.contact.getText())
-                    data.setAddress(self.address.getText().upper())
-                    data.setCategory(self.category.getSelectedItem())
-                    data.setProductName(self.product_item.getSelectedItem())
-                    data.setQuantity(int(self.selected_quantity.getText()))
-                    data.setTotalPayment(int(self.total_payment.getText()))
-                    data.setPaymentReceived(int(self.payment.getText()))
-                    data.setBalance(int(self.balance.getText()))
-                    data.setChange(int(self.change.getText()))
-                    data.setDate(str(datetime.date.today()))
+                    data.setStatus(self.status.text())
+                    data.setName(self.name.text().upper())
+                    data.setBirthday(self.birthday.text())
+                    data.setContactNumber(self.contact.text())
+                    data.setAddress(self.address.text().upper())
+                    data.setCategory(self.category.currentText())
+                    data.setProductName(self.product_item.currentText())
+                    data.setQuantity(int(self.selected_quantity.text()))
+                    data.setTotalPayment(int(self.total_payment.text()))
+                    data.setPaymentReceived(int(self.payment.text()))
+                    data.setBalance(int(self.balance.text()))
+                    data.setChange(int(self.change.text()))
+                    data.setDate(str(date.today()))
 
                     for product in self.item:
-                            if product.getProductName() == self.product_item.getSelectedItem() and product.getCategory() == self.category.getSelectedItem():
-                                    AQ = int(self.product_quantity.getText())
-                                    SQ = int(self.selected_quantity.getText())
+                            if product.getProductName() == self.product_item.currentText() and product.getCategory() == self.category.currentText():
+                                    AQ = int(self.product_quantity.text())
+                                    SQ = int(self.selected_quantity.text())
                                     product.setQuantity(AQ - SQ)
                                     break
 
                     self.save(data)
-
-                    self.category.setSelectedItem(None)
-                    self.product_item.setSelectedItem(None)
+                    self.category.setCurrentText("")
+                    self.product_item.setCurrentText("  ")
                     self.unit_price.setText("0")
                     self.selected_quantity.setText("0")
                     self.product_quantity.setText("0")
@@ -568,11 +558,13 @@ class Ui_POS(object):
                     self.birthday.setText("")
                     self.name.setText("")
 
-                    info = Information(data)
-                    info.show()
+                    messagebox.showinfo("Information", "Customer data saved successfully.")
 
-                    messagebox.showinfo("Success", "Data saved successfully.")
-
+    def backToMain(self):
+        POS.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "main.py")
+        subprocess.run(["python", script_path])
 
 if __name__ == "__main__":
     import sys
