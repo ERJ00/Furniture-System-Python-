@@ -87,10 +87,9 @@ class Ui_allCustomersData(object):
         self.customer.append(data)
 
     def retrieve(self):
-        file_path = "Database/customers_data.txt"
 
         try:
-            with open(file_path, "r") as reader:
+            with open(Encryption.decrypt("Ifyfgfxj&hzxytrjwx_ifyf.ycy"), "r") as reader:
                 lines = reader.readlines()
 
                 for line in lines:

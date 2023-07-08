@@ -75,10 +75,9 @@ class Ui_ReceivedHistory(object):
         self.item.append(data)
 
     def retrieve(self):
-        file_path = "Database/received_product_history.txt"  # Replace with the actual file path
 
         try:
-            with open(file_path, "r") as reader:
+            with open(Encryption.decrypt("Ifyfgfxj&wjhjnaji_uwtizhy_mnxytwd.ycy"), "r") as reader:
                 for line in reader:
                     line = Encryption.decrypt(line)
                     arr_line = line.split(" / ")

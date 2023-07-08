@@ -330,10 +330,9 @@ class Ui_POS(object):
             self.item.append(data)
 
     def retrieve(self):
-            file_path = "Database/products.txt"  # Replace with the actual file path
 
             try:
-                    with open(file_path, "r") as reader:
+                    with open(Encryption.decrypt("Ifyfgfxj&uwtizhyx.ycy"), "r") as reader:
                             for line in reader:
                                     line = Encryption.decrypt(line)
                                     arr_line = line.split(" / ")
@@ -359,10 +358,9 @@ class Ui_POS(object):
             self.buyer.append(data)
 
     def retrieveCustomerData(self):
-            filePath = "Database/transaction_history.txt"  # Replace with the actual file path
 
             try:
-                    with open(filePath, "r") as reader:
+                    with open(Encryption.decrypt("Ifyfgfxj&ywfsxfhynts_mnxytwd.ycy"), "r") as reader:
                             for line in reader:
                                     line = Encryption.decrypt(line)
                                     arr_line = line.split(" / ")
@@ -393,24 +391,21 @@ class Ui_POS(object):
                     print("Error reading file:", e)
 
     def save(self, data):
-            customers_data_path = "Database/customers_data.txt"
-            transaction_history_path = "Database/transaction_history.txt"
-            products_path = "Database/products.txt"
 
             try:
-                    with open(customers_data_path, "a") as f:
+                    with open(Encryption.decrypt("Ifyfgfxj&hzxytrjwx_ifyf.ycy"), "a") as f:
                             encrypted_data = Encryption.encrypt(
                                     f"{data.getStatus()} / {data.getName()} / {data.getBirthday()} / {data.getContactNumber()} / {data.getAddress()} / {data.getProductName()} / {data.getCategory()} / {data.getQuantity()} / {data.getTotalPayment()} / {data.getPaymentReceived()} / {data.getBalance()} / {data.getChange()} / {data.getDate()} / {data.getID()} / "
                             )
                             f.write(encrypted_data + "\n")
 
-                    with open(transaction_history_path, "a") as f:
+                    with open(Encryption.decrypt("Ifyfgfxj&ywfsxfhynts_mnxytwd.ycy"), "a") as f:
                             encrypted_data = Encryption.encrypt(
                                     f"{data.getStatus()} / {data.getName()} / {data.getBirthday()} / {data.getContactNumber()} / {data.getAddress()} / {data.getProductName()} / {data.getCategory()} / {data.getQuantity()} / {data.getTotalPayment()} / {data.getPaymentReceived()} / {data.getBalance()} / {data.getChange()} / {data.getDate()} / {data.getID()} / "
                             )
                             f.write(encrypted_data + "\n")
 
-                    with open(products_path, "w") as f:
+                    with open(Encryption.decrypt("Ifyfgfxj&uwtizhyx.ycy"), "w") as f:
                             for product in self.item:
                                     encrypted_data = Encryption.encrypt(
                                             f"{str(product.getID())} / {str(product.getPrice())} / {str(product.getQuantity())} / {product.getProductName()} / {product.getBrand()} / {product.getDescription()} / {product.getCategory()} / {product.getSupplier()} / {product.getDate()} / "

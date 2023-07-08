@@ -283,10 +283,9 @@ class Ui_ReceiveItems(object):
         self.item.append(data)
 
     def retrieve(self):
-        file_path = "Database/products.txt"  # Replace with the actual file path
 
         try:
-            with open(file_path, "r") as reader:
+            with open(Encryption.decrypt("Ifyfgfxj&uwtizhyx.ycy"), "r") as reader:
                 for line in reader:
                     line = Encryption.decrypt(line)
                     arr_line = line.split(" / ")
@@ -419,7 +418,7 @@ class Ui_ReceiveItems(object):
     def save(self, data):
         try:
             with open(
-                    "Database/received_product_history.txt",
+                    Encryption.decrypt("Ifyfgfxj&wjhjnaji_uwtizhy_mnxytwd.ycy"),
                     "a") as f:
                 encryptedLine = Encryption.encrypt(
                     str(data.getID()) + " / " +
@@ -437,7 +436,7 @@ class Ui_ReceiveItems(object):
             print("An error occurred while writing to received product history file:", str(i))
 
         try:
-            with open("Database/products.txt",
+            with open(Encryption.decrypt("Ifyfgfxj&uwtizhyx.ycy"),
                       "w") as myWriter:
                 for product in self.item:
                     myWriter.write(

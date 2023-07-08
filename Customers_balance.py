@@ -261,7 +261,7 @@ class Ui_customersBalance(object):
             file_path = "Database/customers_data.txt"  # Replace with the actual file path
 
             try:
-                    with open(file_path, "r") as reader:
+                    with open(Encryption.decrypt("Ifyfgfxj&hzxytrjwx_ifyf.ycy"), "r") as reader:
                             lines = reader.readlines()
 
                             for line in lines:
@@ -438,7 +438,7 @@ class Ui_customersBalance(object):
                         custoData.setDate(str(date.today()))
                         print("DONE")
                         try:
-                            file = open("Database/transaction_history.txt", "a")
+                            file = open(Encryption.decrypt("Ifyfgfxj&ywfsxfhynts_mnxytwd.ycy"), "a")
                             print("IM IN")
                             file.write(
                                 Encryption.encrypt(
@@ -459,9 +459,8 @@ class Ui_customersBalance(object):
                             print("Exception occurred while writing to transaction history file:", str(e))
 
                         try:
-                            file_path = r"Database/customers_data.txt"
 
-                            with open(file_path, "w") as file:
+                            with open(Encryption.decrypt("Ifyfgfxj&hzxytrjwx_ifyf.ycy"), "w") as file:
                                 for custoData in self.customer:
                                     file.write(
                                         Encryption.encrypt(
