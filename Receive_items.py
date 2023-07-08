@@ -232,7 +232,22 @@ class Ui_ReceiveItems(object):
         self.retranslateUi(ReceiveItems)
         QtCore.QMetaObject.connectSlotsByName(ReceiveItems)
 
+        #makes the combo box clicable (di naman ata kailangan)
+        #self.CATEGCBOX.activated.connect(self.pressed)
+
         self.BACKBUTTON.clicked.connect(self.backToMain)
+
+        #ADD_2 button to add text to combo box from text box
+        self.ADD_2.clicked.connect(self.addTexttoComboBox)
+
+        #ADD_3 button to edit text from combo box
+        self.ADD_3.clicked.connect(self.editCombo)
+
+        #COMBO BOX
+        self.CATEGCBOX.addItems(["DINING ROOM", "LIVING ROOM", "BEDROOM"])
+
+        #ADD BUTTON
+        self.ADD.clicked.connect(self.AddItems)
 
     def retranslateUi(self, ReceiveItems):
         _translate = QtCore.QCoreApplication.translate
@@ -258,8 +273,6 @@ class Ui_ReceiveItems(object):
     def retrieve(self):
         file_path = "Database/received_product_history.txt"  # Replace with the actual file path
 
-        categories = set()
-
         try:
             with open(file_path, "r") as reader:
                 for line in reader:
@@ -277,7 +290,6 @@ class Ui_ReceiveItems(object):
                     temp.setDate(arr_line[8].strip())
                     self.add_item(temp)
                     temp = Product()  # Create a new instance for each item
-
         except IOError as e:
             print("Error reading file:", e)
 
@@ -287,7 +299,34 @@ class Ui_ReceiveItems(object):
         script_path = os.path.join(current_directory, "main.py")
         subprocess.run(["python", script_path])
 
+    def pressed(self):
+        print(self.CATEGCBOX.currentText())
 
+    def addTexttoComboBox(self):
+        text = self.ADDEDIT.toPlainText()
+
+        self.CATEGCBOX.addItem(text)
+
+    def editCombo(self):
+        #gets the selected item from the cbox
+        index = self.CATEGCBOX.currentIndex()
+        #get new text from the text edit
+        text = self.ADDEDIT.toPlainText()
+        #sets the new text for the selected category
+        self.CATEGCBOX.setItemText(index, text)
+
+    def AddItems(self):
+        prod_text = self.PRODUCTTEXT.toPlainText()
+        brand_text = self.BRANDTXT.toPlainText()
+        up_text = self.UPTEXT.toPlainText()
+        qty_text = self.QTYTEXT.toPlainText()
+        desc_text = self.DSCTEXT.toPlainText()
+        supp_text = self.SUPPTEXT.toPlainText()
+
+        if not prod_text or not brand_text or not up_text or not qty_text or not desc_text or not supp_text:
+            print(self, 'Warning', 'Text Editors cannot be empty!')
+        else:
+            print(self, 'Information', 'Input Succesful')
 
 
 if __name__ == "__main__":
