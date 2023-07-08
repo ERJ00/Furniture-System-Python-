@@ -216,6 +216,7 @@ class Ui_Frame(object):
         self.retranslateUi(Frame)
         QtCore.QMetaObject.connectSlotsByName(Frame)
 
+        self.pushButton_4.clicked.connect(self.minimize)
     def retranslateUi(self, Frame):
         _translate = QtCore.QCoreApplication.translate
         Frame.setWindowTitle(_translate("Frame", "Information"))
@@ -254,9 +255,8 @@ class Ui_Frame(object):
         self.balance.setText("Balance: " + str(data.getBalance()))
         self.change.setText("Change: " + str(data.getChange()))
 
-        window.show()
-        app.exec_()
-
+    def minimize(self):
+        Frame.destroy()
 
 if __name__ == "__main__":
     import sys
@@ -264,6 +264,5 @@ if __name__ == "__main__":
     Frame = QtWidgets.QFrame()
     ui = Ui_Frame()
     ui.setupUi(Frame)
-    ui.display_customer_data_window()
     Frame.show()
     sys.exit(app.exec_())

@@ -76,7 +76,7 @@ font: 75 24pt &quot;Perpetua Titling MT&quot;;</string>
     <string/>
    </property>
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset>
      <normaloff>:/newPrefix/image/Back_button.png</normaloff>:/newPrefix/image/Back_button.png</iconset>
    </property>
    <property name="iconSize">
@@ -96,7 +96,7 @@ font: 75 24pt &quot;Perpetua Titling MT&quot;;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-image: url(:/newPrefix/image/BG.jpeg);</string>
+    <string notr="true">background-image: url(:/newPrefix/BG.jpeg);</string>
    </property>
    <property name="text">
     <string/>
