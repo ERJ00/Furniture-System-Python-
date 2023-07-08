@@ -1,4 +1,4 @@
-<RCC>
+<RC
   <qresource prefix="newPrefix">
     <file>BG.jpeg</file>
     <file>BG2.jpg</file>
