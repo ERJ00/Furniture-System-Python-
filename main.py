@@ -240,6 +240,7 @@ class Ui_main(object):
         self.pushButton_10.clicked.connect(self.POSWindow)
         self.pushButton_7.clicked.connect(self.AllCustomersDataWindow)
         self.pushButton_5.clicked.connect(self.CustomerBalanceWindow)
+        self.pushButton_8.clicked.connect(self.ReceivedItemsWindow)
 
     def retranslateUi(self, main):
         _translate = QtCore.QCoreApplication.translate
@@ -324,6 +325,12 @@ class Ui_main(object):
         main.destroy()
         current_directory = os.path.dirname(os.path.abspath(__file__))
         script_path = os.path.join(current_directory, "Customers_balance.py")
+        subprocess.run(["python", script_path])
+
+    def ReceivedItemsWindow(self):
+        main.destroy()
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "Receive_items.py")
         subprocess.run(["python", script_path])
 
 if __name__ == "__main__":

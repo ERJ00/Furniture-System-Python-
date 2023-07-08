@@ -2,6 +2,8 @@
 import os
 import subprocess
 import datetime
+import random
+from tkinter import messagebox
 
 # Form implementation generated from reading ui file 'Receive_items.ui'
 #
@@ -33,7 +35,7 @@ class Ui_ReceiveItems(object):
         font.setPointSize(12)
         self.tableWidget.setFont(font)
         self.tableWidget.setAutoFillBackground(True)
-        self.tableWidget.setStyleSheet("background-color: rgb(0, 0, 191)")
+        self.tableWidget.setStyleSheet("background-color: rgb(0, 36, 66)")
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(0)
         self.tableWidget.setRowCount(0)
@@ -63,7 +65,7 @@ class Ui_ReceiveItems(object):
         self.label.setStyleSheet("background-image: url(image/BG.jpeg);")
         self.label.setText("")
         self.label.setObjectName("label")
-        self.PRODUCTTEXT = QtWidgets.QTextEdit(ReceiveItems)
+        self.PRODUCTTEXT = QtWidgets.QLineEdit(ReceiveItems)
         self.PRODUCTTEXT.setGeometry(QtCore.QRect(50, 120, 251, 31))
         self.PRODUCTTEXT.setObjectName("PRODUCTTEXT")
         self.PRODUCT = QtWidgets.QLabel(ReceiveItems)
@@ -108,7 +110,7 @@ class Ui_ReceiveItems(object):
         self.UNITPRICE.setTextFormat(QtCore.Qt.RichText)
         self.UNITPRICE.setAlignment(QtCore.Qt.AlignCenter)
         self.UNITPRICE.setObjectName("UNITPRICE")
-        self.UPTEXT = QtWidgets.QTextEdit(ReceiveItems)
+        self.UPTEXT = QtWidgets.QLineEdit(ReceiveItems)
         self.UPTEXT.setGeometry(QtCore.QRect(50, 210, 251, 31))
         self.UPTEXT.setObjectName("UPTEXT")
         self.QUANTITY = QtWidgets.QLabel(ReceiveItems)
@@ -139,13 +141,13 @@ class Ui_ReceiveItems(object):
         self.DESCRIPTION.setTextFormat(QtCore.Qt.RichText)
         self.DESCRIPTION.setAlignment(QtCore.Qt.AlignCenter)
         self.DESCRIPTION.setObjectName("DESCRIPTION")
-        self.DSCTEXT = QtWidgets.QTextEdit(ReceiveItems)
+        self.DSCTEXT = QtWidgets.QLineEdit(ReceiveItems)
         self.DSCTEXT.setGeometry(QtCore.QRect(50, 300, 251, 31))
         self.DSCTEXT.setObjectName("DSCTEXT")
-        self.BRANDTXT = QtWidgets.QTextEdit(ReceiveItems)
+        self.BRANDTXT = QtWidgets.QLineEdit(ReceiveItems)
         self.BRANDTXT.setGeometry(QtCore.QRect(490, 120, 251, 31))
         self.BRANDTXT.setObjectName("BRANDTXT")
-        self.QTYTEXT = QtWidgets.QTextEdit(ReceiveItems)
+        self.QTYTEXT = QtWidgets.QLineEdit(ReceiveItems)
         self.QTYTEXT.setGeometry(QtCore.QRect(490, 210, 251, 31))
         self.QTYTEXT.setObjectName("QTYTEXT")
         self.SUPPLIER = QtWidgets.QLabel(ReceiveItems)
@@ -162,7 +164,7 @@ class Ui_ReceiveItems(object):
         self.SUPPLIER.setTextFormat(QtCore.Qt.RichText)
         self.SUPPLIER.setAlignment(QtCore.Qt.AlignCenter)
         self.SUPPLIER.setObjectName("SUPPLIER")
-        self.SUPPTEXT = QtWidgets.QTextEdit(ReceiveItems)
+        self.SUPPTEXT = QtWidgets.QLineEdit(ReceiveItems)
         self.SUPPTEXT.setGeometry(QtCore.QRect(490, 300, 251, 31))
         self.SUPPTEXT.setObjectName("SUPPTEXT")
         self.CATEGORY = QtWidgets.QLabel(ReceiveItems)
@@ -196,7 +198,7 @@ class Ui_ReceiveItems(object):
         self.ADDEDIT_2.setTextFormat(QtCore.Qt.RichText)
         self.ADDEDIT_2.setAlignment(QtCore.Qt.AlignCenter)
         self.ADDEDIT_2.setObjectName("ADDEDIT_2")
-        self.ADDEDIT = QtWidgets.QTextEdit(ReceiveItems)
+        self.ADDEDIT = QtWidgets.QLineEdit(ReceiveItems)
         self.ADDEDIT.setGeometry(QtCore.QRect(490, 390, 151, 31))
         self.ADDEDIT.setObjectName("ADDEDIT")
         self.ADD = QtWidgets.QPushButton(ReceiveItems)
@@ -247,7 +249,7 @@ class Ui_ReceiveItems(object):
         self.ADD_3.clicked.connect(self.editCombo)
 
         #COMBO BOX
-        self.CATEGCBOX.addItems(["DINING ROOM", "LIVING ROOM", "BEDROOM"])
+        #self.CATEGCBOX.addItems(["DINING ROOM", "LIVING ROOM", "BEDROOM"])
 
         #ADD BUTTON
         self.ADD.clicked.connect(self.AddItems)
@@ -269,12 +271,19 @@ class Ui_ReceiveItems(object):
         self.ADD_3.setText(_translate("ReceiveItems", "EDIT"))
 
     item = []
+    product_category = []
+
+    def add_category(self, PC):
+        for product in self.item:
+            if product.getCategory() == PC:
+                return
+        self.product_category.append(PC)
 
     def add_item(self, data):
         self.item.append(data)
 
     def retrieve(self):
-        file_path = "Database/received_product_history.txt"  # Replace with the actual file path
+        file_path = "Database/products.txt"  # Replace with the actual file path
 
         try:
             with open(file_path, "r") as reader:
@@ -289,12 +298,23 @@ class Ui_ReceiveItems(object):
                     temp.setBrand(arr_line[4].strip())
                     temp.setDescription(arr_line[5].strip())
                     temp.setCategory(arr_line[6].strip())
+                    self.add_category(temp.getCategory())
                     temp.setSupplier(arr_line[7].strip())
                     temp.setDate(arr_line[8].strip())
                     self.add_item(temp)
                     temp = Product()  # Create a new instance for each item
         except IOError as e:
             print("Error reading file:", e)
+        finally:
+            reader.close()
+
+    def formWindowOpened(self):
+        mod = QtGui.QStandardItemModel()
+        for category in self.product_category:
+            item = QtGui.QStandardItem(category)
+            mod.appendRow(item)
+        self.CATEGCBOX.setModel(mod)
+        self.CATEGCBOX.setCurrentIndex(-1)
 
     def backToMain(self):
         ReceiveItems.destroy()
@@ -306,45 +326,148 @@ class Ui_ReceiveItems(object):
         print(self.CATEGCBOX.currentText())
 
     def addTexttoComboBox(self):
-        text = self.ADDEDIT.toPlainText()
+        text = self.ADDEDIT.text().upper()
+        if text == "":
+            messagebox.showwarning("Missing Data", "Please fill up all needed data.")
+            return
+
+        # Check if the text already exists in the combobox items
+        if text in [self.CATEGCBOX.itemText(i) for i in range(self.CATEGCBOX.count())]:
+            messagebox.showwarning("Duplicate Entry", "Category already exists.")
+            return
 
         self.CATEGCBOX.addItem(text)
+        messagebox.showinfo("Message Dialog", "Category Successfully added.")
 
     def editCombo(self):
+        if self.CATEGCBOX.currentText() == "":
+            messagebox.showwarning("Select Category", "Please select category.")
+            return
         #gets the selected item from the cbox
         index = self.CATEGCBOX.currentIndex()
         #get new text from the text edit
-        text = self.ADDEDIT.toPlainText()
+        text = self.ADDEDIT.text().upper()
         #sets the new text for the selected category
         self.CATEGCBOX.setItemText(index, text)
+        messagebox.showinfo("Edit Category", "Category Successfully Edited.")
 
     def AddItems(self):
-        category_text = self.CATEGCBOX.currentText()
-        prod_text = self.PRODUCTTEXT.toPlainText()
-        brand_text = self.BRANDTXT.toPlainText()
-        up_text = self.UPTEXT.toPlainText()
-        qty_text = self.QTYTEXT.toPlainText()
-        desc_text = self.DSCTEXT.toPlainText()
-        supp_text = self.SUPPTEXT.toPlainText()
+        productName = self.PRODUCTTEXT.text().upper().strip()
+        brand = self.BRANDTXT.text().upper().strip()
+        priceText = self.UPTEXT.text().strip()
+        quantityText = self.QTYTEXT.text().strip()
+        description = self.DSCTEXT.text().strip()
+        supplier = self.SUPPTEXT.text().strip()
+        category = self.CATEGCBOX.currentText().upper().strip()
 
-        if not prod_text or not brand_text or not up_text or not qty_text or not desc_text or not supp_text:
-            msg_box = QMessageBox()
-            msg_box.setIcon(QMessageBox.Warning)
-            msg_box.setText('Text Editors cannot be empty!')
-            msg_box.setWindowTitle('Warning')
-            msg_box.exec_()
-            self.ADD.setStyleSheet('background-color: red')
+        if (productName == "" or brand == "" or priceText == "" or quantityText == "" or
+                description == "" or supplier == "" or category == ""):
+            messagebox.showwarning("Missing Data", "Please fill up all needed data.")
+            return
+        try:
+            price = int(priceText)
+            quantity = int(quantityText)
+
+        except ValueError:
+            messagebox.showerror("Invalid Data", "Please enter valid numeric values for price and quantity.")
+            return
+
+        data = Product()
+        data.setProductName(productName)
+        data.setBrand(brand)
+        data.setPrice(price)
+        data.setQuantity(quantity)
+        data.setDescription(description)
+        data.setSupplier(supplier)
+        data.setCategory(category)
+        data.setDate(str(datetime.date.today()))
+
+        index = self.check_product(data.getProductName(), data.getBrand(), data.getCategory())
+        print(index)
+        if index != 0:
+            data.setID(index)
+
+            for product in self.item:
+                if product.getID() == index:
+                    product.setQuantity(product.getQuantity() + quantity)
+                    product.setSupplier(data.getSupplier())
+                    product.setDate(data.getDate())
+                    product.setPrice(data.getPrice())
+                    messagebox.showinfo("Information", "Updated successfully.")
+                    print("Update", index)
+                    break
         else:
-            self.ADD.setStyleSheet('background-color: green')
-            self.displayItemsWindow(prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text)
+            print("IM IN")
+            ID = random.randint(11111, 99999)
+            while self.checkID(ID) == True:
+                ID = random.randint(11111, 99999)
+            print("Done")
+            data.setID(ID)
+            print("New", index)
+            self.add_item(data)
+            messagebox.showinfo("Information", "New product successfully added.")
 
-            #clear the text  box after the display
-            self.PRODUCTTEXT.clear()
-            self.BRANDTXT.clear()
-            self.UPTEXT.clear()
-            self.QTYTEXT.clear()
-            self.DSCTEXT.clear()
-            self.SUPPTEXT.clear()
+        self.PRODUCTTEXT.setText("")
+        self.BRANDTXT.setText("")
+        self.UPTEXT.setText("")
+        self.QTYTEXT.setText("")
+        self.DSCTEXT.setText("")
+        self.SUPPTEXT.setText("")
+        self.CATEGCBOX.setCurrentText("")
+        self.save(data)
+
+    def save(self, data):
+        try:
+            with open(
+                    "Database/received_product_history.txt",
+                    "a") as f:
+                encryptedLine = Encryption.encrypt(
+                    str(data.getID()) + " / " +
+                    str(data.getPrice()) + " / " +
+                    str(data.getQuantity()) + " / " +
+                    data.getProductName() + " / " +
+                    data.getBrand() + " / " +
+                    data.getDescription() + " / " +
+                    data.getCategory() + " / " +
+                    data.getSupplier() + " / " +
+                    data.getDate() + " / "
+                )
+                f.write(encryptedLine + "\n")
+        except IOError as i:
+            print("An error occurred while writing to received product history file:", str(i))
+
+        try:
+            with open("Database/products.txt",
+                      "w") as myWriter:
+                for product in self.item:
+                    myWriter.write(
+                        Encryption.encrypt(str(product.getID()) + " / ") +
+                        Encryption.encrypt(str(product.getPrice()) + " / ") +
+                        Encryption.encrypt(str(product.getQuantity()) + " / ") +
+                        Encryption.encrypt(product.getProductName() + " / ") +
+                        Encryption.encrypt(product.getBrand() + " / ") +
+                        Encryption.encrypt(product.getDescription() + " / ") +
+                        Encryption.encrypt(product.getCategory() + " / ") +
+                        Encryption.encrypt(product.getSupplier() + " / ") +
+                        Encryption.encrypt(product.getDate() + " / ") +
+                        "\n"
+                    )
+        except IOError as e:
+            print("An error occurred while writing to products file:", str(e))
+
+    def checkID(self, id):
+            for customer in self.item:
+                    if customer.getID() == id:
+                            return True
+            return False
+
+    def check_product(self, name, brand, category):
+        print("name : " + name)
+        print("Brand : " + brand)
+        for product in self.item:
+            if product.getProductName() == name and product.getBrand() == brand and product.getCategory() == category:
+                return product.getID()
+        return 0
 
     def displayItemsWindow(self, prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text):
         self.DisplayItems = QtWidgets.QFrame()
@@ -463,5 +586,6 @@ if __name__ == "__main__":
     ui = Ui_ReceiveItems()
     ui.setupUi(ReceiveItems)
     ui.retrieve()
+    ui.formWindowOpened()
     ReceiveItems.show()
     sys.exit(app.exec_())
