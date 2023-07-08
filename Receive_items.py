@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import subprocess
+import datetime
 
 # Form implementation generated from reading ui file 'Receive_items.ui'
 #
@@ -11,6 +12,8 @@ import subprocess
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QMessageBox, QFrame, QLabel
 from Encryption import Encryption
 from Product import Product
 
@@ -316,6 +319,7 @@ class Ui_ReceiveItems(object):
         self.CATEGCBOX.setItemText(index, text)
 
     def AddItems(self):
+        category_text = self.CATEGCBOX.currentText()
         prod_text = self.PRODUCTTEXT.toPlainText()
         brand_text = self.BRANDTXT.toPlainText()
         up_text = self.UPTEXT.toPlainText()
@@ -324,9 +328,132 @@ class Ui_ReceiveItems(object):
         supp_text = self.SUPPTEXT.toPlainText()
 
         if not prod_text or not brand_text or not up_text or not qty_text or not desc_text or not supp_text:
-            print(self, 'Warning', 'Text Editors cannot be empty!')
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setText('Text Editors cannot be empty!')
+            msg_box.setWindowTitle('Warning')
+            msg_box.exec_()
+            self.ADD.setStyleSheet('background-color: red')
         else:
-            print(self, 'Information', 'Input Succesful')
+            self.ADD.setStyleSheet('background-color: green')
+            self.displayItemsWindow(prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text)
+
+            #clear the text  box after the display
+            self.PRODUCTTEXT.clear()
+            self.BRANDTXT.clear()
+            self.UPTEXT.clear()
+            self.QTYTEXT.clear()
+            self.DSCTEXT.clear()
+            self.SUPPTEXT.clear()
+
+    def displayItemsWindow(self, prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text):
+        self.DisplayItems = QtWidgets.QFrame()
+        self.ui = Ui_DisplayItems()
+        self.ui.setupUi(self.DisplayItems, prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text)
+        self.DisplayItems.show()
+
+
+class Ui_DisplayItems(object):
+    def setupUi(self, DisplayItems, prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text):
+        DisplayItems.setObjectName("DisplayItems")
+        DisplayItems.setEnabled(True)
+        DisplayItems.resize(400, 400)
+        DisplayItems.setMinimumSize(QtCore.QSize(400, 400))
+        DisplayItems.setMaximumSize(QtCore.QSize(400, 400))
+        DisplayItems.setAutoFillBackground(True)
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Background, QtGui.QColor(135, 206, 235))
+        DisplayItems.setPalette(palette)
+        self.label = QtWidgets.QLabel(DisplayItems)
+        self.label.setGeometry(QtCore.QRect(10, 10, 381, 41))
+        self.label.setStyleSheet("color: rgb(0, 0, 0);\n"
+                                 "font: 75 20pt \"Perpetua Titling MT\";")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setObjectName("label")
+        self.prod_label = QtWidgets.QLabel(DisplayItems)
+        self.prod_label.setGeometry(QtCore.QRect(30, 80, 100, 21))
+        self.prod_label.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.prod_label.setObjectName("prod_label")
+        self.brand_label = QtWidgets.QLabel(DisplayItems)
+        self.brand_label.setGeometry(QtCore.QRect(30, 120, 100, 21))
+        self.brand_label.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.brand_label.setObjectName("brand_label")
+        self.up_label = QtWidgets.QLabel(DisplayItems)
+        self.up_label.setGeometry(QtCore.QRect(30, 160, 100, 21))
+        self.up_label.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.up_label.setObjectName("up_label")
+        self.qty_label = QtWidgets.QLabel(DisplayItems)
+        self.qty_label.setGeometry(QtCore.QRect(30, 200, 100, 21))
+        self.qty_label.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.qty_label.setObjectName("qty_label")
+        self.desc_label = QtWidgets.QLabel(DisplayItems)
+        self.desc_label.setGeometry(QtCore.QRect(30, 240, 100, 21))
+        self.desc_label.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.desc_label.setObjectName("desc_label")
+        self.supplier_label = QtWidgets.QLabel(DisplayItems)
+        self.supplier_label.setGeometry(QtCore.QRect(30, 280, 100, 21))
+        self.supplier_label.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.supplier_label.setObjectName("supplier_label")
+        self.prod_value = QtWidgets.QLabel(DisplayItems)
+        self.prod_value.setGeometry(QtCore.QRect(150, 80, 231, 21))
+        self.prod_value.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.prod_value.setObjectName("prod_value")
+        self.brand_value = QtWidgets.QLabel(DisplayItems)
+        self.brand_value.setGeometry(QtCore.QRect(150, 120, 231, 21))
+        self.brand_value.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.brand_value.setObjectName("brand_value")
+        self.up_value = QtWidgets.QLabel(DisplayItems)
+        self.up_value.setGeometry(QtCore.QRect(150, 160, 231, 21))
+        self.up_value.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.up_value.setObjectName("up_value")
+        self.qty_value = QtWidgets.QLabel(DisplayItems)
+        self.qty_value.setGeometry(QtCore.QRect(150, 200, 231, 21))
+        self.qty_value.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.qty_value.setObjectName("qty_value")
+        self.desc_value = QtWidgets.QLabel(DisplayItems)
+        self.desc_value.setGeometry(QtCore.QRect(150, 240, 231, 21))
+        self.desc_value.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.desc_value.setObjectName("desc_value")
+        self.supplier_value = QtWidgets.QLabel(DisplayItems)
+        self.supplier_value.setGeometry(QtCore.QRect(150, 280, 231, 21))
+        self.supplier_value.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.supplier_value.setObjectName("supplier_value")
+        self.date_label = QtWidgets.QLabel(DisplayItems)
+        self.date_label.setGeometry(QtCore.QRect(30, 50, 341, 21))
+        self.date_label.setStyleSheet("font: 10pt \"Perpetua Titling MT\";")
+        self.date_label.setObjectName("date_label")
+        self.date_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.category_label = QtWidgets.QLabel(DisplayItems)
+        self.category_label.setGeometry(QtCore.QRect(30, 360, 100, 21))
+        self.category_label.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.category_label.setObjectName("category_label")
+        self.category_value = QtWidgets.QLabel(DisplayItems)
+        self.category_value.setGeometry(QtCore.QRect(150, 360, 231, 21))
+        self.category_value.setStyleSheet("font: 12pt \"Perpetua Titling MT\";")
+        self.category_value.setObjectName("category_value")
+
+        self.retranslateUi(DisplayItems, prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text)
+        QtCore.QMetaObject.connectSlotsByName(DisplayItems)
+
+    def retranslateUi(self, DisplayItems, prod_text, brand_text, up_text, qty_text, desc_text, supp_text, category_text):
+        _translate = QtCore.QCoreApplication.translate
+        DisplayItems.setWindowTitle(_translate("DisplayItems", "Display Items"))
+        self.label.setText(_translate("DisplayItems", "Received Items"))
+        self.date_label.setText(_translate("DisplayItems", QtCore.QDate.currentDate().toString("yyyy-MM-dd")))  # Add current date
+        self.prod_label.setText(_translate("DisplayItems", "Product:"))
+        self.brand_label.setText(_translate("DisplayItems", "Brand:"))
+        self.up_label.setText(_translate("DisplayItems", "Unit Price:"))
+        self.qty_label.setText(_translate("DisplayItems", "Quantity:"))
+        self.desc_label.setText(_translate("DisplayItems", "Description:"))
+        self.supplier_label.setText(_translate("DisplayItems", "Supplier:"))
+        self.prod_value.setText(_translate("DisplayItems", prod_text))
+        self.brand_value.setText(_translate("DisplayItems", brand_text))
+        self.up_value.setText(_translate("DisplayItems", up_text))
+        self.qty_value.setText(_translate("DisplayItems", qty_text))
+        self.desc_value.setText(_translate("DisplayItems", desc_text))
+        self.supplier_value.setText(_translate("DisplayItems", supp_text))
+        self.category_label.setText(_translate("DisplayItems", "Category:"))
+        self.category_value.setText(_translate("DisplayItems", category_text))
 
 
 if __name__ == "__main__":
