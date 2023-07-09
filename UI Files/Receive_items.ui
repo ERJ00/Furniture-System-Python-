@@ -126,7 +126,10 @@ font: 75 24pt &quot;Perpetua Titling MT&quot;;</string>
     </rect>
    </property>
    <property name="autoFillBackground">
-    <bool>true</bool>
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/newPrefix/BG.jpeg);</string>
    </property>
    <property name="text">
     <string/>
@@ -532,7 +535,7 @@ font: 75 16pt &quot;Perpetua Titling MT&quot;;</string>
   <zorder>ADD_3</zorder>
  </widget>
  <resources>
-  <include location="../images.qrc"/>
+  <include location="images.qrc"/>
  </resources>
  <connections/>
 </ui>

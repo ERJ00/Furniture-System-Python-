@@ -25,9 +25,12 @@ class Sample:
 if __name__ == "__main__":
     messages = ["BALANCE / EMMAN / 11/11/1111 / 0123456789 / NEAR CITY / MODCLOUD / LIVING ROOM / 2 / 11000 / 1000 / 10000 / 0 / 2023-06-17 / 11289 / "]
     shift = 3
+    msg = "Database/received_product_history.txt"
     ui = Encryption()
     for message in messages:
         encrypted_message = ui.encrypt(message)
         print(encrypted_message)
-        decrypted_message = ui.decrypt("17303#&#1500#&#10#&#YFGQJ#&#GWFSI#Y#&#Bttijs#Yfgqj#&#INSNSL#WTTR#&#Mtti#Nsh.#&#2023-05-23#&#")
-        print(decrypted_message)
+        encrypted_message = ui.encrypt(msg)
+        print(encrypted_message)
+        # decrypted_message = ui.decrypt("17303#&#1500#&#10#&#YFGQJ#&#GWFSI#Y#&#Bttijs#Yfgqj#&#INSNSL#WTTR#&#Mtti#Nsh.#&#2023-05-23#&#")
+        # print(decrypted_message)

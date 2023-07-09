@@ -71,10 +71,9 @@ class Ui_outOfStock(object):
         self.item.append(data)
 
     def retrieve(self):
-        file_path = "Database/products.txt"  # Replace with the actual file path
 
         try:
-            with open(file_path, "r") as reader:
+            with open(Encryption.decrypt("Ifyfgfxj&uwtizhyx.ycy"), "r") as reader:
                 for line in reader:
                     line = Encryption.decrypt(line)
                     arr_line = line.split(" / ")
