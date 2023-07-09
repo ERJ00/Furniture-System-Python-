@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import subprocess
+from datetime import datetime
+
 
 # Form implementation generated from reading ui file 'Transaction_history.ui'
 #
@@ -60,6 +62,25 @@ class Ui_transactionHistory(object):
         self.label_3.raise_()
         self.pushButton.raise_()
 
+        # Add a combo box for selecting the month
+        self.comboBox = QtWidgets.QComboBox(transactionHistory)
+        self.comboBox.setGeometry(QtCore.QRect(820, 20, 151, 22))
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItems(["All", "January", "February", "March", "April", "May", "June", "July", "August",
+                                "September", "October", "November", "December"])
+
+        # Connect the combo box signal to the sorting function
+        self.comboBox.currentIndexChanged.connect(self.display_table)
+
+        # Add a combo box for selecting the status
+        self.comboBoxStatus = QtWidgets.QComboBox(transactionHistory)
+        self.comboBoxStatus.setGeometry(QtCore.QRect(70, 20, 151, 22))
+        self.comboBoxStatus.setObjectName("comboBoxStatus")
+        self.comboBoxStatus.addItems(["All", "Balance", "Paid"])
+
+        # Connect the combo box signal to the sorting function
+        self.comboBoxStatus.currentIndexChanged.connect(self.display_table)
+
         self.retranslateUi(transactionHistory)
         QtCore.QMetaObject.connectSlotsByName(transactionHistory)
 
@@ -115,7 +136,35 @@ class Ui_transactionHistory(object):
             print("Error reading file:", e)
 
     def display_table(self):
-        num_rows = len(self.customer)
+        selected_month = self.comboBox.currentText()
+        selected_status = self.comboBoxStatus.currentText()
+
+        self.tableWidget.clear()
+
+        # Filter the data based on the selected month and status
+        filtered_items = []
+
+        if selected_month == "All" and selected_status == "All":
+            filtered_items = self.customer
+        elif selected_month == "All":
+            if selected_status == "Balance":
+                filtered_items = [item for item in self.customer if item.balance > 0]
+            elif selected_status == "Paid":
+                filtered_items = [item for item in self.customer if item.balance == 0]
+        elif selected_status == "All":
+            filtered_items = [item for item in self.customer if
+                              datetime.strptime(item.date, "%Y-%m-%d").strftime("%B") == selected_month]
+        else:
+            if selected_status == "Balance":
+                filtered_items = [item for item in self.customer if
+                                  datetime.strptime(item.date, "%Y-%m-%d").strftime("%B") == selected_month
+                                  and item.balance > 0]
+            elif selected_status == "Paid":
+                filtered_items = [item for item in self.customer if
+                                  datetime.strptime(item.date, "%Y-%m-%d").strftime("%B") == selected_month
+                                  and item.balance == 0]
+
+        num_rows = len(filtered_items)
         num_cols = 13
 
         # Set the table dimensions
@@ -124,28 +173,32 @@ class Ui_transactionHistory(object):
 
         # Define the desired attribute names
         attribute_names = [
-        "status", "name", "birthday", "contactNumber", "address", "productName",
-        "category", "quantity", "totalPayment", "paymentReceived", "balance", "change", "date" ]
+            "status", "name", "birthday", "contactNumber", "address", "productName",
+            "category", "quantity", "totalPayment", "paymentReceived", "balance", "change", "date"]
         self.tableWidget.setHorizontalHeaderLabels(attribute_names)
 
-        # Populate the table with data
-        for row in range(num_rows):
-            item = self.customer[row]
-            for col in range(num_cols):
-                attribute_name = attribute_names[col]
-                value = getattr(item, attribute_name)
-                table_item = QTableWidgetItem(str(value))
+        if num_rows == 0:
+            # Display "No data available" message
+            table_item = QTableWidgetItem("No data available")
+            table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+            table_item.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.tableWidget.setItem(0, 0, table_item)
+            self.tableWidget.setSpan(0, 0, 1, num_cols)
+        else:
+            # Populate the table with data
+            for row, item in enumerate(filtered_items):
+                for col in range(num_cols):
+                    attribute_name = attribute_names[col]
+                    value = getattr(item, attribute_name)
+                    table_item = QTableWidgetItem(str(value))
 
-                # Set the item flags to make it read-only
-                table_item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+                    # Set the item flags to make it read-only
+                    table_item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
 
-                self.tableWidget.setItem(row, col, table_item)
+                    self.tableWidget.setItem(row, col, table_item)
 
         # Adjust column widths to maximize space
-        # table_width = self.tableWidget.viewport().width()
-        # column_width = int(table_width / num_cols)
-        # for col in range(num_cols):
-        #     self.tableWidget.setColumnWidth(col, column_width)
+        self.tableWidget.resizeColumnsToContents()
 
     def backToMain(self):
         transactionHistory.destroy()
