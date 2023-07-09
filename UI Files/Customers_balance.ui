@@ -632,7 +632,7 @@ color: rgb(255, 255, 255);</string>
   <zorder>tableWidget</zorder>
  </widget>
  <resources>
-  <include location="UI Files/images.qrc"/>
+  <include location="images.qrc"/>
  </resources>
  <connections/>
 </ui>
